@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pandas as pd
+
 from core.filter_base import FilterBase
 from core.validation_context import ValidationContext
 
@@ -17,6 +19,6 @@ class ExcelFileFilter(FilterBase):
         return context
 
     def _validate_excel(self, file_path: Path) -> tuple[bool, str | None]:
-        if file_path.stat().st_size > 0:
-            return (True, None)
-        return (False, "A fájl üres")
+        df = pd.read_excel(file_path)
+        is_empty = df.size == 0
+        return (not is_empty, "A fájl üres" if is_empty else None)
