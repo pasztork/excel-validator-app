@@ -1,0 +1,7 @@
+gitdb==4.0.12
+GitPython==3.1.41
+PyQt6==6.11.0
+PyQt6-Qt6==6.11.0
+PyQt6_sip==13.11.1
+setuptools==78.1.1
+smmap==5.0.3
