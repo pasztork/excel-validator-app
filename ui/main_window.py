@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QBrush, QColor
+from PyQt6.QtGui import QBrush, QColor, QIcon
 from PyQt6.QtWidgets import (
     QFileDialog,
     QFrame,
@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+import ui.resources_rc  # noqa: F401
 from core.folder_validator import FolderValidator
 from core.validation_context import ValidationContext
 from ui.folder_line_edit import FolderLineEdit
@@ -27,6 +28,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Excel ellenőrző")
+        self.setWindowIcon(QIcon(":/icon.png"))
         self.resize(1000, 600)
 
         self.validator = FolderValidator()
