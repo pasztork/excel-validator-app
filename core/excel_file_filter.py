@@ -5,10 +5,11 @@ EXCEL_EXTENSIONS = {".xlsx", ".xls", ".xlsm", ".xltx", ".xltm", ".xlsb"}
 
 
 class ExcelFileFilter(FilterBase):
-    """Filter that marks non-Excel files as not-of-interest."""
+    """Filter that operates on Excel files."""
 
     def process(self, context: ValidationContext) -> ValidationContext:
-        """Check if the file is an Excel file and set is_of_interest accordingly."""
+        """Check if the file is an Excel file."""
         file_suffix = context.file_path.suffix.lower()
-        context.is_of_interest = file_suffix in EXCEL_EXTENSIONS
+        if file_suffix in EXCEL_EXTENSIONS:
+            pass
         return context
