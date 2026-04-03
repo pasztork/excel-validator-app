@@ -5,7 +5,7 @@ from pathlib import Path
 @dataclass
 class ValidationContext:
     file_path: Path
-    is_of_interest: bool = True
+    is_of_interest: bool = False
     is_valid: bool = True
     error: str = None
     data: dict = None
