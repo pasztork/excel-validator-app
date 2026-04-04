@@ -10,15 +10,15 @@
 
 - Core Logic Development
 
-    - [ ] Define validation rules
+    - [x] Define validation rules
     - [x] Develop an expandable validation pipeline
-    - [ ] Develop validation reporting logic (Pass/Fail criteria)
+    - [x] Develop validation reporting logic (Pass/Fail criteria)
 
 - UI Implementation
 
     - [x] Design main window layout (PyQt6)
     - [x] Build file processing progress bar
-    - [ ] Create results table with error highlighting
+    - [x] Create results table with error highlighting
 
 - Testing & Distribution
 
@@ -29,11 +29,11 @@
 ## Validation Roadmap
 
 - [x] Verify input format
-- [ ] Verify file location
-- [ ] Validate that `Sum(E:G)` for each record matches the total in `Column H`
-- [ ] Ensure the combined sum of `Columns H + I` matches the constant value assigned to the user's role
-- [ ] Flag any data records containing timestamps or dates falling on Saturdays or Sundays
-- [ ] Validate that the total cumulative time does not exceed the maximum threshold defined by the user's role
+- [x] Verify file location
+- [x] Validate that `Sum(E:G)` for each record matches the total in `Column H`
+- [x] Ensure the combined sum of `Columns H + I` matches the constant value assigned to the user's role
+- [x] Flag any data records containing data falling on Saturdays or Sundays
+- [x] Validate that the total cumulative time does not exceed the maximum threshold defined by the user's role
 
 ## Validation Constants
 
