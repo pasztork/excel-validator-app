@@ -170,11 +170,10 @@ class MainWindow(QMainWindow):
 
         status_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        if not result.is_valid:
-            warning_brush = QBrush(QColor(255, 220, 220))
-            file_item.setBackground(warning_brush)
-            status_item.setBackground(warning_brush)
-            message_item.setBackground(warning_brush)
+        brush = QBrush(QColor(220, 255, 220)) if result.is_valid else QBrush(QColor(255, 220, 220))
+        file_item.setBackground(brush)
+        status_item.setBackground(brush)
+        message_item.setBackground(brush)
 
         self.results_table.setItem(row, 0, file_item)
         self.results_table.setItem(row, 1, status_item)

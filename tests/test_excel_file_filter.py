@@ -7,24 +7,22 @@ import pandas as pd
 from core.excel_file_filter import ExcelFileFilter
 from core.validation_context import ValidationContext
 
+TEST_DIR = Path(__file__).parent / "data"
+
 
 class TestExcelFileFilter(unittest.TestCase):
-    TEST_DIR = Path(__file__).parent
-
-    def test_valid_excel_file_passes_dummy_validation(self) -> None:
+    def test_valid_excel_file_passes_validation(self) -> None:
         filter_ = ExcelFileFilter()
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            file_path = Path(temp_dir) / "valid.xlsx"
-            pd.DataFrame({"value": [1, 2, 3]}).to_excel(file_path, index=False)
-            context = ValidationContext(file_path=file_path)
+        file_path = TEST_DIR / "valid.xlsx"
+        context = ValidationContext(file_path=file_path)
 
-            result = filter_.process(context)
+        result = filter_.process(context)
 
-            self.assertTrue(result.is_valid)
-            self.assertIsNone(result.error)
+        self.assertTrue(result.is_valid)
+        self.assertIsNone(result.error)
 
-    def test_empty_excel_file_fails_dummy_validation(self) -> None:
+    def test_empty_excel_file_fails_validation(self) -> None:
         filter_ = ExcelFileFilter()
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -49,6 +47,28 @@ class TestExcelFileFilter(unittest.TestCase):
 
             self.assertTrue(result.is_valid)
             self.assertIsNone(result.error)
+
+    def test_work_on_weekend_fails(self) -> None:
+        filter_ = ExcelFileFilter()
+
+        file_path = TEST_DIR / "work_on_weekend.xlsx"
+        context = ValidationContext(file_path=file_path)
+
+        result = filter_.process(context)
+
+        self.assertFalse(result.is_valid)
+        self.assertIsNotNone(result.error)
+
+    def test_overbooking_fails(self) -> None:
+        filter_ = ExcelFileFilter()
+
+        file_path = TEST_DIR / "overbooking.xlsx"
+        context = ValidationContext(file_path=file_path)
+
+        result = filter_.process(context)
+
+        self.assertFalse(result.is_valid)
+        self.assertIsNotNone(result.error)
 
 
 if __name__ == "__main__":

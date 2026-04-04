@@ -13,3 +13,13 @@ class ValidationContext:
     def __post_init__(self):
         if self.data is None:
             self.data = {}
+
+    def invalidate(self, error: str):
+        self.is_valid = False
+        self.error = error
+
+    def flag_not_interesting(self):
+        self.is_of_interest = False
+
+    def flag_interesting(self):
+        self.is_of_interest = True
