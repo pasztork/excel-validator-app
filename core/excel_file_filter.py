@@ -55,7 +55,7 @@ class ExcelFileFilter(FilterBase):
         clean_role = str(role).strip().lower()
         for const in ExcelFileFilter.VALIDATION_CONSTANTS:
             for name in const.possible_role_names:
-                if name in clean_role:
+                if re.search(rf"\b{re.escape(name)}\b", clean_role):
                     return const
         return None
 
