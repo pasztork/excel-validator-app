@@ -83,11 +83,11 @@ class ExcelFileFilter(FilterBase):
             return
 
         # Check if rows are okay
-        total_hours_worked_idx = df.index[df.iloc[:, 0] == "Nr. de lucrate"].tolist()
+        total_hours_worked_idx = df.index[df.iloc[:, 0].isin(["Nr. de lucrate", "Nr ore lucrate"])].tolist()
         if len(total_hours_worked_idx) != 0:
             total_hours_worked_idx = total_hours_worked_idx[0]
         else:
-            context.invalidate('Nem ismert a fájl sablonja, hiányzik a "Nr. de lucrate" sor')
+            context.invalidate("Ismeretlen sablon: hiányzik az összesített munkaidő sora")
             return
 
         hours = df.iloc[13:total_hours_worked_idx]
