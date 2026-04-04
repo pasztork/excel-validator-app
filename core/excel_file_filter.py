@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 
 from core.filter_base import FilterBase
@@ -9,6 +11,8 @@ EXCEL_EXTENSIONS = {".xlsx", ".xls", ".xlsm", ".xltx", ".xltm", ".xlsb"}
 
 class ExcelFileFilter(FilterBase):
     """Filter that operates on Excel files."""
+
+    HOUR_REGEX = r"^(?:CO|LP)\(([-+]?\d+)\)$"
 
     def __init__(self):
         self.constants = [
@@ -52,7 +56,13 @@ class ExcelFileFilter(FilterBase):
             return
 
         # Check if rows are okay
-        total_hours_worked_idx = df.index[df.iloc[:, 0] == "Nr. de lucrate"].tolist()[0]
+        total_hours_worked_idx = df.index[df.iloc[:, 0] == "Nr. de lucrate"].tolist()
+        if len(total_hours_worked_idx) != 0:
+            total_hours_worked_idx = total_hours_worked_idx[0]
+        else:
+            context.invalidate('Nem ismert a fájl sablonja, hiányzik a "Nr. de lucrate" sor')
+            return
+
         hours = df.iloc[13:total_hours_worked_idx]
 
         for row_idx, row in hours.iterrows():
@@ -65,7 +75,7 @@ class ExcelFileFilter(FilterBase):
 
             # Check if numbers are present
             raw_values = row.iloc[[4, 5, 6, 7]].astype(str).str.strip()
-            cleaned_values = raw_values.str.replace(r"^CO\(([-+]?\d+)\)$", r"\1", regex=True)
+            cleaned_values = raw_values.str.replace(ExcelFileFilter.HOUR_REGEX, r"\1", regex=True)
             values = pd.to_numeric(cleaned_values, errors="coerce")
 
             if values.isna().any():
@@ -77,7 +87,10 @@ class ExcelFileFilter(FilterBase):
                 context.invalidate(f"Az 5., 6. és 7. oszlopok összege nem egyenlő a 8. oszloppal a {row_idx + 1}. sorban")
                 return
 
-            full_time_hours = row.iloc[8]
+            full_time_raw = str(row.iloc[8]).strip()
+            full_time_cleaned = re.sub(ExcelFileFilter.HOUR_REGEX, r"\1", full_time_raw)
+            full_time_hours = pd.to_numeric(full_time_cleaned, errors="coerce")
+
             if full_time_hours == 0 and constants.column_i_required:
                 context.invalidate(f"A főmunkaidő hiányzik a {row_idx + 1}. sorban")
                 return

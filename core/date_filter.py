@@ -31,7 +31,7 @@ class DateFilter(FilterBase):
         previous_month_name, previous_month_number, previous_year = self._previous_month_and_year()
         normalized_path = str(context.file_path).lower()
 
-        if ((previous_month_name in normalized_path) or previous_month_number in normalized_path) and (str(previous_year) in normalized_path):
+        if ((previous_month_name in normalized_path) or (previous_month_number in normalized_path)) and (str(previous_year) in normalized_path):
             context.flag_interesting()
         else:
             context.flag_not_interesting()
