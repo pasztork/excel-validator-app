@@ -1,37 +1,27 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from pathlib import Path
 
 from core.filter_base import FilterBase
 from core.validation_context import ValidationContext
 
 
 class DateFilter(FilterBase):
-    ROMANIAN_MONTH_NAMES = (
-        "ianuarie",
-        "februarie",
-        "martie",
-        "aprilie",
-        "mai",
-        "iunie",
-        "iulie",
-        "august",
-        "septembrie",
-        "octombrie",
-        "noiembrie",
-        "decembrie",
-    )
-
     @staticmethod
-    def _previous_month_and_year() -> tuple[str, str, int]:
+    def _previous_month_and_year() -> tuple[int, int]:
         previous_month_date = date.today().replace(day=1) - timedelta(days=1)
-        month_name = DateFilter.ROMANIAN_MONTH_NAMES[previous_month_date.month - 1]
-        month_number = f"{previous_month_date.month:02d}"
-        return month_name, month_number, previous_month_date.year
+        return previous_month_date.month, previous_month_date.year
 
     def process(self, context: ValidationContext) -> ValidationContext:
-        previous_month_name, previous_month_number, previous_year = self._previous_month_and_year()
-        normalized_path = str(context.file_path).lower()
+        previous_month, previous_year = DateFilter._previous_month_and_year()
+        file_stat = Path(context.file_path).stat()
+        created_timestamp = getattr(file_stat, "st_birthtime", file_stat.st_ctime)
+        created_date = datetime.fromtimestamp(created_timestamp).date()
+        modified_date = datetime.fromtimestamp(file_stat.st_mtime).date()
 
-        if ((previous_month_name in normalized_path) or (previous_month_number in normalized_path)) and (str(previous_year) in normalized_path):
+        created_last_month = created_date.month == previous_month and created_date.year == previous_year
+        modified_last_month = modified_date.month == previous_month and modified_date.year == previous_year
+
+        if created_last_month or modified_last_month:
             context.flag_interesting()
         else:
             context.flag_not_interesting()

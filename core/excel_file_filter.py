@@ -18,10 +18,11 @@ class ExcelFileFilter(FilterBase):
         self.constants = [
             ValidationConstants("consilier școlar", 4, 21, False),
             ValidationConstants("mentor", 12, 21, True),
-            ValidationConstants("profesor limba română", 4, 40, False),
+            ValidationConstants("profesor de limba engleza", 12, 8, True),
+            ValidationConstants("profesor limbă și literatură română", 4, 40, False),
             ValidationConstants("asistent grup țintă", 4, 21, False),
             ValidationConstants("responsabil grup țintă", 12, 84, True),
-            ValidationConstants("consilier ceoc", 4, 42, False),
+            ValidationConstants("expert de consiliere și orientare ceoc", 4, 42, False),
             ValidationConstants("asistent ucp", 12, 84, True),
             ValidationConstants("manager de proiect", 12, 84, True),
         ]
