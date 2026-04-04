@@ -9,6 +9,8 @@ from core.validation_context import ValidationContext
 
 
 class TestExcelFileFilter(unittest.TestCase):
+    TEST_DIR = Path(__file__).parent
+
     def test_valid_excel_file_passes_dummy_validation(self) -> None:
         filter_ = ExcelFileFilter()
 

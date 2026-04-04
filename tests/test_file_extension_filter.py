@@ -1,13 +1,13 @@
 import unittest
 from pathlib import Path
 
-from core.type_filter import TypeFilter
+from core.file_extension_filter import FileExtensionFilter
 from core.validation_context import ValidationContext
 
 
-class TestTypeFilter(unittest.TestCase):
+class TestFileExtensionFilter(unittest.TestCase):
     def test_marks_supported_extension_as_interesting(self) -> None:
-        filter_ = TypeFilter([".xlsx", ".xlsm"])
+        filter_ = FileExtensionFilter([".xlsx", ".xlsm"])
         context = ValidationContext(file_path=Path("report.xlsx"))
 
         result = filter_.process(context)
@@ -15,7 +15,7 @@ class TestTypeFilter(unittest.TestCase):
         self.assertTrue(result.is_of_interest)
 
     def test_marks_unsupported_extension_as_not_interesting(self) -> None:
-        filter_ = TypeFilter([".xlsx"])
+        filter_ = FileExtensionFilter([".xlsx"])
         context = ValidationContext(file_path=Path("notes.md"))
 
         result = filter_.process(context)
