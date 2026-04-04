@@ -1,5 +1,7 @@
 # excel-validator-app
 
+[![Build Windows EXE](https://github.com/pasztork/excel-validator-app/actions/workflows/build-windows-exe.yml/badge.svg)](https://github.com/pasztork/excel-validator-app/actions/workflows/build-windows-exe.yml)
+
 ## Project Tasks
 
 - Environment Setup
