@@ -107,7 +107,12 @@ class MainWindow(QMainWindow):
         self.results_table.horizontalHeader().setStretchLastSection(True)
         self.results_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.results_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self.results_table.setAlternatingRowColors(True)
+
+        self.results_table.setStyleSheet("""
+            QTableWidget::item:hover {
+                background-color: rgba(180, 180, 0, 255);
+            }
+        """)
 
         layout.addWidget(title)
         layout.addWidget(self.results_table)
