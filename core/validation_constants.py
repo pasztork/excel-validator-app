@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
-@dataclass
+@dataclass(frozen=True)
 class ValidationConstants:
-    role: str
     max_daily_hours: int
     monthly_project_target: int
     column_i_required: bool
+    possible_role_names: tuple[str, ...] = field(default_factory=tuple)

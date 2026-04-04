@@ -14,18 +14,50 @@ class ExcelFileFilter(FilterBase):
 
     HOUR_REGEX = r"^(?:CO|LP)\(([-+]?\d+)\)$"
 
-    def __init__(self):
-        self.constants = [
-            ValidationConstants("consilier școlar", 4, 21, False),
-            ValidationConstants("mentor", 12, 21, True),
-            ValidationConstants("profesor de limba engleza", 12, 8, True),
-            ValidationConstants("profesor limbă și literatură română", 4, 40, False),
-            ValidationConstants("asistent grup țintă", 4, 21, False),
-            ValidationConstants("responsabil grup țintă", 12, 84, True),
-            ValidationConstants("expert de consiliere și orientare ceoc", 4, 42, False),
-            ValidationConstants("asistent ucp", 12, 84, True),
-            ValidationConstants("manager de proiect", 12, 84, True),
-        ]
+    VALIDATION_CONSTANTS = [
+        ValidationConstants(
+            4,
+            21,
+            False,
+            (
+                "consilier",
+                "consilier școlar",
+            ),
+        ),
+        ValidationConstants(12, 21, True, ("mentor",)),
+        ValidationConstants(
+            12,
+            8,
+            True,
+            (
+                "engleza",
+                "profesor de limba engleza",
+            ),
+        ),
+        ValidationConstants(
+            4,
+            40,
+            False,
+            (
+                "romana",
+                "profesor limbă și literatură română",
+            ),
+        ),
+        ValidationConstants(4, 21, False, ("asistent grup țintă",)),
+        ValidationConstants(12, 84, True, ("responsabil grup țintă",)),
+        ValidationConstants(4, 42, False, ("expert de consiliere și orientare ceoc",)),
+        ValidationConstants(12, 84, True, ("asistent ucp",)),
+        ValidationConstants(12, 84, True, ("manager de proiect",)),
+    ]
+
+    @staticmethod
+    def _get_validation_constants(role: str) -> ValidationConstants | None:
+        clean_role = str(role).strip().lower()
+        for const in ExcelFileFilter.VALIDATION_CONSTANTS:
+            for name in const.possible_role_names:
+                if name in clean_role:
+                    return const
+        return None
 
     def process(self, context: ValidationContext) -> ValidationContext:
         """Check if the file is an Excel file."""
@@ -33,12 +65,6 @@ class ExcelFileFilter(FilterBase):
         if file_suffix in EXCEL_EXTENSIONS:
             self._validate_excel(context)
         return context
-
-    def _get_validation_constants(self, role: str) -> ValidationConstants | None:
-        for c in self.constants:
-            if c.role in role:
-                return c
-        return None
 
     def _validate_excel(self, context: ValidationContext) -> None:
         df = pd.read_excel(context.file_path, header=None)
@@ -49,9 +75,9 @@ class ExcelFileFilter(FilterBase):
             return
 
         # Check if role exists
-        role = df.iloc[4, 4].lower()
+        role = df.iloc[4, 4]
         context.data["role"] = role
-        constants = self._get_validation_constants(role)
+        constants = ExcelFileFilter._get_validation_constants(role)
         if constants is None:
             context.invalidate(f"Nem ismert szerepkör: {role}")
             return
@@ -69,9 +95,14 @@ class ExcelFileFilter(FilterBase):
         for row_idx, row in hours.iterrows():
             # Check if hours were booked on the weekend
             if pd.isna(row.iloc[1]):
-                if row.iloc[2:].notna().any():
-                    context.invalidate(f"Hétvégi munkavégzés a {row_idx + 1}. sorban")
-                    return
+                weekend_values = row.iloc[3:]
+                if weekend_values.notna().any():
+                    weekend_cleaned = weekend_values.astype(str).str.strip().str.replace(ExcelFileFilter.HOUR_REGEX, r"\1", regex=True)
+                    weekend_numeric = pd.to_numeric(weekend_cleaned, errors="coerce")
+
+                    if weekend_numeric.sum() != 0:
+                        context.invalidate(f"Hétvégi munkavégzés a {row_idx + 1}. sorban")
+                        return
                 continue
 
             # Check if numbers are present
