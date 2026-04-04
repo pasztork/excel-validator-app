@@ -20,8 +20,9 @@ class DateFilter(FilterBase):
 
         created_last_month = created_date.month == previous_month and created_date.year == previous_year
         modified_last_month = modified_date.month == previous_month and modified_date.year == previous_year
+        modified_this_month = modified_date.month == date.today().month and modified_date.year == date.today().year
 
-        if created_last_month or modified_last_month:
+        if created_last_month or modified_last_month or modified_this_month:
             context.flag_interesting()
         else:
             context.flag_not_interesting()
