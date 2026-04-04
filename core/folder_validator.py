@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Iterator
 
+from core.date_filter import DateFilter
 from core.excel_file_filter import EXCEL_EXTENSIONS, ExcelFileFilter
 from core.file_extension_filter import FileExtensionFilter
 from core.pipeline import Pipeline
@@ -12,7 +13,7 @@ class FolderValidator:
 
     def __init__(self):
         self.folder_path = None
-        self.pipe = Pipeline(FileExtensionFilter(EXCEL_EXTENSIONS), ExcelFileFilter())
+        self.pipe = Pipeline(FileExtensionFilter(EXCEL_EXTENSIONS), DateFilter(), ExcelFileFilter())
 
     @property
     def file_count(self) -> int:
