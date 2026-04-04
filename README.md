@@ -23,7 +23,7 @@
 - Testing & Distribution
 
     - [ ] Run unit tests for Excel validation
-    - [ ] Package application using PyInstaller
+    - [x] Package application using PyInstaller
     - [ ] Conduct end-to-end test with a sample Google Drive folder
 
 ## Validation Roadmap
